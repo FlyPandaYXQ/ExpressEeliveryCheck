@@ -36,6 +36,7 @@ public class SmsReadUntil {
         List<HashMap<String, String>> smsList = new ArrayList<>();
         StringBuilder smsBuilder = new StringBuilder();
         HashMap<String,String> hashMap = new HashMap();
+        int index = 0;
         try {
             Uri uri = Uri.parse(SMS_URI_INBOX);
             String[] projection = new String[] { "_id", "address", "person",
@@ -91,9 +92,11 @@ public class SmsReadUntil {
 //                    smsBuilder.append("intPerson:"+intPerson + ", \t");
 //                    smsBuilder.append(strType);
 //                    smsBuilder.append(" ]\n\n");
+                    index++;
                     hashMap= new HashMap();
                     hashMap.put("strbody",strbody);
                     hashMap.put("strDate",strDate);
+                    hashMap.put("index",index+"");
                     System.out.println("==============================读取中");
                     smsList.add(hashMap);
                 } while (cur.moveToNext());
