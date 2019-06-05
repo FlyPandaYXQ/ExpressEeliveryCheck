@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tv_dialog_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:text="11111111111111"
+            android:textFontWeight="25"/>
+
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/tvAlertDialogMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:textSize="14sp"
+            android:text="11111111111111"
+            />
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/is_or_no_constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_dialog_positive"
+        app:layout_constraintStart_toEndOf="@+id/tv_dialog_positive">
+
+        <TextView
+            android:id="@+id/tv_dialog_positive"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/colorBlue"
+            android:padding="10dp"
+            android:text="确定"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@id/tv_dialog_negative"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintBaseline_toBaselineOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_dialog_negative"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:background="@color/common_text_color_red"
+            android:padding="10dp"
+            android:text="取消"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toEndOf="@id/tv_dialog_positive"
+            app:layout_constraintTop_toTopOf="parent" />
+    </android.support.constraint.ConstraintLayout>
+
+</LinearLayout>

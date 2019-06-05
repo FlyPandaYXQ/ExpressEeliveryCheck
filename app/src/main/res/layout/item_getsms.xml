@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#ccc">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:background="#ffffff"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/item_getsms_title"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:textSize="16sp"
+            android:text="1111111"/>
+        <!--<LinearLayout-->
+            <!--android:layout_width="1dp"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="#ccc">-->
+        <!--</LinearLayout>-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/item_getsms_body"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_vertical"
+                android:padding="12dp"
+                android:singleLine="true"
+                android:ellipsize="marquee"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:textSize="14sp"
+                android:text="1111111"/>
+            <TextView
+                android:id="@+id/item_getsms_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:paddingTop="4dp"
+                android:paddingRight="8dp"
+                android:textSize="10sp"
+                android:textColor="@color/common_text_color_red"
+                android:text="2222"/>
+        </RelativeLayout>
+
+
+
+
+    </LinearLayout>
+
+</LinearLayout>
