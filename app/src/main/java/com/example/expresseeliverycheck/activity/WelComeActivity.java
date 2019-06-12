@@ -42,6 +42,9 @@ public class WelComeActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_welcome_min)
     protected TextView activity_welcome_min;
+
+    private int MIXMIN= 5000;
+    private CountDownTimer timer;
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,17 +55,17 @@ public class WelComeActivity extends AppCompatActivity {
             if (isNeedCheck) {
                 checkPermissions(needPermissions);
             }else {
-                countDown(5000);
+                countDown(MIXMIN);
             }
         } else {
-            countDown(5000);
+            countDown(MIXMIN);
         }
     }
 
     //倒计时器
     private void countDown(int time) {
         /** 倒计时，一次1秒 */
-        final CountDownTimer timer = new CountDownTimer(time, 1000) {
+        timer = new CountDownTimer(time, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 // TODO Auto-generated method stub
@@ -79,10 +82,25 @@ public class WelComeActivity extends AppCompatActivity {
     @OnClick(R.id.activity_welcome_skipping)
     protected void skippingClick(){
        startActivity(new Intent(this,MainActivity.class));
+       timer.cancel();
        finish();
     }
 
     //==================================== 授权 ============================================//
+
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        isNeedCheck = true;
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (isNeedCheck) {
+                checkPermissions(needPermissions);
+            } else {
+                countDown(MIXMIN);
+            }
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -91,7 +109,7 @@ public class WelComeActivity extends AppCompatActivity {
             if (isNeedCheck) {
                 checkPermissions(needPermissions);
             } else {
-                countDown(5000);
+                countDown(MIXMIN);
             }
         }
     }
@@ -107,8 +125,7 @@ public class WelComeActivity extends AppCompatActivity {
                 List<String> needRequestPermissonList = findDeniedPermissions(permissions);
                 for (String s : needRequestPermissonList) {
                 }
-                if (null != needRequestPermissonList
-                        && needRequestPermissonList.size() > 0) {
+                if (null != needRequestPermissonList && needRequestPermissonList.size() > 0) {
                     try {
                         String[] array = needRequestPermissonList.toArray(new String[needRequestPermissonList.size()]);
                         Method method = getClass().getMethod("requestPermissions", new Class[]{String[].class, int.class});
@@ -116,7 +133,11 @@ public class WelComeActivity extends AppCompatActivity {
                     } catch (Throwable e) {
 
                     }
+                } else {
+                    countDown(MIXMIN);
                 }
+            } else {
+                countDown(MIXMIN);
             }
 
         } catch (Throwable e) {
@@ -197,7 +218,7 @@ public class WelComeActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= 23) {
                 if (requestCode == PERMISSON_REQUESTCODE) {
                     if (!verifyPermissions(paramArrayOfInt)) {
-                        showMissingPermissionDialog();
+                        getNoticeSmsPermissionDialog();
                         isNeedCheck = false;
                     } else {
                         // 用户同意
@@ -220,7 +241,7 @@ public class WelComeActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("提示");
             builder.setMessage("当前应用缺少必要权限。请点击 > 设置 > 权限 > 打开所需权限");
-
+            isNeedCheck = true;
             // 拒绝, 退出应用
             builder.setNegativeButton("取消",
                     new DialogInterface.OnClickListener() {
@@ -259,8 +280,8 @@ public class WelComeActivity extends AppCompatActivity {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("提示");
-                builder.setMessage("MIUI系统需要获取【通知类短息】权限。请点击 > 设置 > 权限 > 打开所需权限");
-
+                builder.setMessage("需要获取【短息】【通知类短息】权限。请点击 > 设置 > 权限 > 打开所需权限");
+                isNeedCheck = true;
                 // 拒绝, 退出应用
                 builder.setNegativeButton("取消",
                         new DialogInterface.OnClickListener() {
@@ -292,6 +313,8 @@ public class WelComeActivity extends AppCompatActivity {
             } catch (Throwable e) {
                 e.printStackTrace();
             }
+        } else {
+            getNoticeSmsPermissionDialog();
         }
     }
 
