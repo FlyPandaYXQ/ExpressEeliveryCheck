@@ -42,7 +42,7 @@ public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
             @Override
             public void onClick(View v) {
               alertDialog =  new AlertDialog(mContext, getItem(position).getSmsTitle(), getItem(position).getBody(), "", "知道了", new alertDialogClick());
-           alertDialog.show();
+              alertDialog.show();
             }
         });
     }

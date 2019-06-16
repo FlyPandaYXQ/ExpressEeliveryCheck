@@ -5,39 +5,63 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:background="@color/light_gray"
     tools:context=".activity.MainActivity">
 
-
-    <com.scwang.smartrefresh.layout.SmartRefreshLayout
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/sms_list_refreshLayout"
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#fff"
-        app:srlAccentColor="#666666"
-        app:srlEnablePreviewInEditMode="true"
-        app:srlEnableLastTime="false"
-        app:srlPrimaryColor="#fff">
-        <!--srlAccentColor srlPrimaryColor 将会改变 Header 和 Footer 的主题颜色-->
-        <!--srlEnablePreviewInEditMode 可以开启和关闭预览功能-->
-        <com.scwang.smartrefresh.layout.header.ClassicsHeader
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#fff"
-            app:srlEnableLastTime="false"
-            />
+        android:layout_height="40dp"
+        app:title="@string/app_name"
+        app:titleTextAppearance="@style/Toolbar.TitleText"
+        app:titleTextColor="@color/black" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/sms_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fadingEdge="none"
-            android:overScrollMode="never" />
-
-        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-            android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <LinearLayout
+            android:id="@+id/activity_main_now"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+            android:layout_weight="1"
+            android:background="@drawable/border_right"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp">
+            <TextView
+                android:id="@+id/activity_main_now_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="今天"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_main_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/border_bottom"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="4dp">
+            <TextView
+                android:id="@+id/activity_main_history_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="以往"
+                android:gravity="center"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/activity_main_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    </FrameLayout>
 
 </LinearLayout>

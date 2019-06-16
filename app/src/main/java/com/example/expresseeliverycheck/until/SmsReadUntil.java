@@ -43,12 +43,10 @@ public class SmsReadUntil {
                     "body", "date", "type", };
             Cursor cur = activity.getContentResolver().query(uri, projection, null,
                     null, "date desc"); // 获取手机内部短信
-            System.out.println("==============================读取中"+cur);
             // 获取短信中最新的未读短信
             // Cursor cur = getContentResolver().query(uri, projection,
             // "read = ?", new String[]{"0"}, "date desc");
             if (cur.moveToFirst()) {
-                System.out.println("==============================读取中"+cur.getCount());
                 int index_Address = cur.getColumnIndex("address");
                 int index_Person = cur.getColumnIndex("person");
                 int index_Body = cur.getColumnIndex("body");
@@ -97,7 +95,6 @@ public class SmsReadUntil {
                     hashMap.put("strbody",strbody);
                     hashMap.put("strDate",strDate);
                     hashMap.put("index",index+"");
-                    System.out.println("==============================读取中");
                     smsList.add(hashMap);
                 } while (cur.moveToNext());
 
