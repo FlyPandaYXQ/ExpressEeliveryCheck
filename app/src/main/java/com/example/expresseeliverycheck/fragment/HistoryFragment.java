@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.view.GetSmsListView;
@@ -21,6 +22,9 @@ public class HistoryFragment extends Fragment {
     protected RecyclerView sms_list;
     @BindView(R.id.sms_list_refreshLayout)
     protected RefreshLayout sms_list_refreshLayout;
+    @BindView(R.id.imageView)
+    protected ImageView imageView;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +63,7 @@ public class HistoryFragment extends Fragment {
 
     private void initData() {
         sms_list_refreshLayout.setEnableLoadMore(false);
-        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(),1);
+        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(),1,imageView);
         getSmsListView.forceRefresh();
     }
 }

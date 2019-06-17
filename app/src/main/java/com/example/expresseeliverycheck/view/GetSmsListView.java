@@ -4,7 +4,9 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
+import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.adapter.GetSmsAdapter;
 import com.example.expresseeliverycheck.model.SmsModel;
 import com.example.expresseeliverycheck.until.ImageUtil;
@@ -21,10 +23,12 @@ public class GetSmsListView extends BaseListView<SmsModel> {
     private List<SmsModel> list = new ArrayList();
     private final String ExpressName = "韵达，天天快递，佳吉快递，百世物流，联邦快递，德邦物流，华强物流，中铁物流，百世汇通，中铁快运，E速宝，信丰物流，顺丰速运，申通快递，龙邦速递，天地华宇，快捷快递，邮政国内小包，黑猫宅急便，新邦物流，卡行天下，安能物流，贝海国际速递，佳吉快运，能达速递，优速快递 ，增益速递，国通快递，邮政小包，圆通速递，圆通快递，中通快递，EMS经济快递，EMS，德邦快递，凡宇速递，联昊通，全峰快递，全一快递，城市100，广东EMS，速尔，燕文上海，燕文深圳，燕文义乌，飞远(爱彼西)配送，宅急送，中国邮政，微快递，菜鸟驿站";
     private int flag;
+    private ImageView imageView;
 
-    public GetSmsListView(RecyclerView recyclerView, RefreshLayout refreshLayout, Context context, int flag) {
+    public GetSmsListView(RecyclerView recyclerView, RefreshLayout refreshLayout, Context context, int flag, ImageView imageView) {
         super(recyclerView, refreshLayout, context);
         this.flag = flag;
+        this.imageView = imageView;
         mRecyclerView.addItemDecoration(new SpaceItemDecoration(ImageUtil.dp2px(mContext, 4)));
     }
 
@@ -34,6 +38,7 @@ public class GetSmsListView extends BaseListView<SmsModel> {
         adapter = new GetSmsAdapter(mContext);
         adapter.setDataList(list);
     }
+
 
     @Override
     public void onRefreshing() {
@@ -103,12 +108,19 @@ public class GetSmsListView extends BaseListView<SmsModel> {
                         if (("韵达").equals(s)) {
                             s = "韵达快递";
                         }
-                        //去重
                         smsModel.setSmsTitle(s);
                         smsModel.setSmsDate(smsDate);
                         smsModel.setBody(str1);
                         smsModel.setIndex(index);
-                        list1.add(smsModel);
+                        //去重
+
+                        if(list1.size()!=0&&i>0){
+                            if (!list1.get(list1.size()-1).getIndex().equals(index)){
+                                list1.add(smsModel);
+                            }
+                        } else if (list1.size()==0){
+                            list1.add(smsModel);
+                        }
                     }
                 }
             } else if (flag == 1 && !nowDate.equals(smsDate)) {
@@ -125,12 +137,24 @@ public class GetSmsListView extends BaseListView<SmsModel> {
                         smsModel.setSmsDate(smsDate);
                         smsModel.setBody(str1);
                         smsModel.setIndex(index);
-                        list1.add(smsModel);
+                        if(list1.size()!=0&&i>0){
+                            if (!list1.get(list1.size()-1).getIndex().equals(index)){
+                                list1.add(smsModel);
+                            }
+                        } else if (list1.size()==0){
+                            list1.add(smsModel);
+                        }
                     }
                 }
             }
         }
         list.addAll(list1);
+        if (imageView!=null){
+            imageView.setVisibility(View.GONE);
+            if (list.size()==0){
+                imageView.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 }

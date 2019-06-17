@@ -1,22 +1,19 @@
 package com.example.expresseeliverycheck.activity;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.fragment.HistoryFragment;
 import com.example.expresseeliverycheck.fragment.NowFragment;
-import com.example.expresseeliverycheck.view.GetSmsListView;
-import com.scwang.smartrefresh.layout.api.RefreshLayout;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -29,6 +26,10 @@ public class MainActivity extends AppCompatActivity {
     protected TextView activity_main_now_tv;
     @BindView(R.id.activity_main_history_tv)
     protected TextView activity_main_history_tv;
+    @BindView(R.id.activity_main_now_iv)
+    protected ImageView activity_main_now_iv;
+    @BindView(R.id.activity_main_history_iv)
+    protected ImageView activity_main_history_iv;
     @BindView(R.id.activity_main_now)
     protected LinearLayout activity_main_now;
     @BindView(R.id.activity_main_history)
@@ -47,6 +48,11 @@ public class MainActivity extends AppCompatActivity {
         activity_main_history_tv.setSelected(false);
         setSelected(0,0);
         textViewSelect(0);
+        //记录是否第一次进入
+        SharedPreferences sharedPreferences = getSharedPreferences("flypanda",0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("first",1);
+        editor.commit();
     }
 
 
@@ -72,9 +78,8 @@ public class MainActivity extends AppCompatActivity {
                     nowFragment = new NowFragment();
                     //千万别忘记将该fragment加入到ftr中
                     ftr.add(R.id.activity_main_fragment, nowFragment);
-                    if (isFrist==1){
-                        nowFragment.refresh();
-                    }
+                } else {
+                    nowFragment.refresh();
                 }
                 ftr.show(nowFragment);
                 break;
@@ -82,14 +87,14 @@ public class MainActivity extends AppCompatActivity {
                 if (historyFragment == null) {
                     historyFragment = new HistoryFragment();
                     ftr.add(R.id.activity_main_fragment, historyFragment);
-                    if (isFrist==1){
-                        historyFragment.refresh();
-                    }
+                } else {
+                    historyFragment.refresh();
                 }
                 ftr.show(historyFragment);
                 break;
         }
-        ftr.commit();//最后千万别忘记提交事务
+//        ftr.commit;
+        ftr.commitAllowingStateLoss();//最后千万别忘记提交事务 restart保存状态
     }
 
     //隐藏fragment
@@ -117,15 +122,15 @@ public class MainActivity extends AppCompatActivity {
     private void textViewSelect(int flag){
         switch (flag){
             case 0:
-                activity_main_now.setBackgroundResource(R.color.colorBlue);
-                activity_main_now_tv.setTextColor(getResources().getColor(R.color.white));
-                activity_main_history.setBackgroundResource(R.color.transparent);
+                activity_main_now_iv.setImageResource(R.mipmap.topen);
+//                activity_main_now_tv.setTextColor(getResources().getColor(R.color.white));
+                activity_main_history_iv.setImageResource(R.mipmap.tclose);
                 activity_main_history_tv.setTextColor(getResources().getColor(R.color.black));
                 break;
             case 1:
-                activity_main_history.setBackgroundResource(R.color.colorBlue);
-                activity_main_history_tv.setTextColor(getResources().getColor(R.color.white));
-                activity_main_now.setBackgroundResource(R.color.transparent);
+                activity_main_history_iv.setImageResource(R.mipmap.topen);
+//                activity_main_history_tv.setTextColor(getResources().getColor(R.color.white));
+                activity_main_now_iv.setImageResource(R.mipmap.tclose);
                 activity_main_now_tv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }

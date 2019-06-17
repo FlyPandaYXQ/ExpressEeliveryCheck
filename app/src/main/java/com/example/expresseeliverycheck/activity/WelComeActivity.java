@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -14,6 +15,8 @@ import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
@@ -42,25 +45,37 @@ public class WelComeActivity extends AppCompatActivity {
 
     @BindView(R.id.activity_welcome_min)
     protected TextView activity_welcome_min;
+    @BindView(R.id.activity_welcome_skipping)
+    protected LinearLayout activity_welcome_skipping;
 
-    private int MIXMIN= 5000;
+    private int MIXMIN = 5000;
     private CountDownTimer timer;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome);
         ButterKnife.bind(this);
-        activity_welcome_min.setText("(5)秒");
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (isNeedCheck) {
-                checkPermissions(needPermissions);
-            }else {
+        SharedPreferences sharedPreferences = getSharedPreferences("flypanda", 0);
+        if (1 == sharedPreferences.getInt("first", 0)) {
+            //非第一次进倒计时1秒
+            activity_welcome_skipping.setVisibility(View.GONE);
+            countDown(1000);
+        } else {
+            //如果第一个倒计时5秒 获取权限
+            activity_welcome_min.setText("(5)秒");
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (isNeedCheck) {
+                    checkPermissions(needPermissions);
+                } else {
+                    countDown(MIXMIN);
+                }
+            } else {
                 countDown(MIXMIN);
             }
-        } else {
-            countDown(MIXMIN);
         }
     }
+
 
     //倒计时器
     private void countDown(int time) {
@@ -69,7 +84,7 @@ public class WelComeActivity extends AppCompatActivity {
             @Override
             public void onTick(long millisUntilFinished) {
                 // TODO Auto-generated method stub
-                activity_welcome_min.setText("("+ millisUntilFinished / 1000 + ")秒");
+                activity_welcome_min.setText("(" + millisUntilFinished / 1000 + ")秒");
             }
 
             @Override
@@ -80,10 +95,10 @@ public class WelComeActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.activity_welcome_skipping)
-    protected void skippingClick(){
-       startActivity(new Intent(this,MainActivity.class));
-       timer.cancel();
-       finish();
+    protected void skippingClick() {
+        startActivity(new Intent(this, MainActivity.class));
+        timer.cancel();
+        finish();
     }
 
     //==================================== 授权 ============================================//
