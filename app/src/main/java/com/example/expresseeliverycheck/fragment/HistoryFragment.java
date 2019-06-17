@@ -34,6 +34,7 @@ public class HistoryFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_now, container, false);
         ButterKnife.bind(this, view);
+        imageView.setVisibility(View.GONE);
         initData();
         return view;
     }

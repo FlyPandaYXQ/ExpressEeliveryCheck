@@ -6,6 +6,8 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -18,6 +20,7 @@ import com.example.expresseeliverycheck.fragment.NowFragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTouch;
 
 public class MainActivity extends AppCompatActivity {
     @BindView(R.id.activity_main_fragment)
@@ -34,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     protected LinearLayout activity_main_now;
     @BindView(R.id.activity_main_history)
     protected LinearLayout activity_main_history;
+    @BindView(R.id.activity_main)
+    protected LinearLayout activity_main;
 
     private NowFragment nowFragment;
     private HistoryFragment historyFragment;
@@ -44,15 +49,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        activity_main_now_tv.setSelected(true);
-        activity_main_history_tv.setSelected(false);
-        setSelected(0,0);
-        textViewSelect(0);
         //记录是否第一次进入
         SharedPreferences sharedPreferences = getSharedPreferences("flypanda",0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("first",1);
         editor.commit();
+
+        activity_main_now_tv.setSelected(true);
+        activity_main_history_tv.setSelected(false);
+        setSelected(0,0);
+        textViewSelect(0);
+
+        activity_main.setOnTouchListener(new OntouchNextPage());
     }
 
 
@@ -134,6 +142,48 @@ public class MainActivity extends AppCompatActivity {
                 activity_main_now_tv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
-
     }
+
+
+    class OntouchNextPage implements View.OnTouchListener {
+
+        private float mPosX;
+        private float mPosY;
+
+        private float mCurPosX;
+        private float mCurPosY;
+        @Override
+        public boolean onTouch(View v, MotionEvent event) {
+            // TODO Auto-generated method stub
+            System.out.println("------------------- "+event.getAction());
+            switch (event.getAction()) {
+
+                case MotionEvent.ACTION_DOWN:
+                    mPosX = event.getX();
+                    mPosY = event.getY();
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    mCurPosX = event.getX();
+                    mCurPosY = event.getY();
+                    break;
+                case MotionEvent.ACTION_UP:
+                    System.out.println("------------------- "+mPosX);
+                    System.out.println("------------------- "+mCurPosX);
+                    if (mCurPosX - mPosX > 0
+                            && (Math.abs(mCurPosX - mPosX) > 25)) {
+                        setSelected(1,1);
+                        textViewSelect(1);
+
+                    } else if (mCurPosX - mPosX < 0
+                            && (Math.abs(mCurPosX - mPosX) > 25)) {
+                        setSelected(0,1);
+                        textViewSelect(0);
+                    }
+
+                    break;
+            }
+            return true;
+        }
+    }
+
 }
