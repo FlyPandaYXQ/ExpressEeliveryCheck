@@ -1,6 +1,5 @@
 package com.example.expresseeliverycheck.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -14,11 +13,10 @@ import com.scwang.smartrefresh.layout.header.ClassicsHeader;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
 import com.scwang.smartrefresh.layout.listener.OnRefreshListener;
 
-
-import java.util.Arrays;
 import java.util.List;
 
 /**
+ * @author FlyPanda@若曦
  */
 public abstract class BaseListView<T> {
 
@@ -46,7 +44,7 @@ public abstract class BaseListView<T> {
         this.mRefreshLayout = refreshLayout;
 
         mRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL,false);
+        layoutManager = new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
 
         mRecyclerView.setLayoutManager(layoutManager);
         setAdapter();

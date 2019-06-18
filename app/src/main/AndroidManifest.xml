@@ -23,8 +23,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.MainActivity"></activity>
-        <activity android:name=".activity.GetMessageActivity"></activity>
+        <activity android:name="com.example.expresseeliverycheck.activity.MainActivity"></activity>
+        <activity android:name="com.example.expresseeliverycheck.activity.GetMessageActivity"></activity>
+
     </application>
 
 </manifest>

@@ -1,6 +1,5 @@
 package com.example.expresseeliverycheck.adapter;
 
-import android.app.Dialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +14,9 @@ import com.example.expresseeliverycheck.until.AlertDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
     private LayoutInflater mLayoutInflater;
     private AlertDialog alertDialog;
@@ -41,8 +43,8 @@ public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
         ((ViewHolder) holder).item_getsms_body.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              alertDialog =  new AlertDialog(mContext, getItem(position).getSmsTitle(), getItem(position).getBody(), "", "知道了", new alertDialogClick());
-              alertDialog.show();
+                alertDialog = new AlertDialog(mContext, getItem(position).getSmsTitle(), getItem(position).getBody(), "", "知道了", new alertDialogClick());
+                alertDialog.show();
             }
         });
     }
@@ -61,7 +63,8 @@ public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
             ButterKnife.bind(this, itemView);
         }
     }
-    class alertDialogClick implements AlertDialog.OnDialogButtonClickListener{
+
+    class alertDialogClick implements AlertDialog.OnDialogButtonClickListener {
         @Override
         public void onDialogButtonClick(boolean isPositive) {
             alertDialog.dismiss();

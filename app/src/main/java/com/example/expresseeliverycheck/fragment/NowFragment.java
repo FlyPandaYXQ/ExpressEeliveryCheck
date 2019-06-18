@@ -1,6 +1,5 @@
 package com.example.expresseeliverycheck.fragment;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +16,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class NowFragment extends Fragment {
     private GetSmsListView getSmsListView;
     @BindView(R.id.sms_list)
@@ -48,12 +50,13 @@ public class NowFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getSmsListView!=null){
+        if (getSmsListView != null) {
             getSmsListView.forceRefresh();
         }
     }
-    public void refresh(){
-        if (getSmsListView!=null){
+
+    public void refresh() {
+        if (getSmsListView != null) {
             getSmsListView.forceRefresh();
         }
     }
@@ -65,7 +68,7 @@ public class NowFragment extends Fragment {
 
     private void initData() {
         sms_list_refreshLayout.setEnableLoadMore(false);
-        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(),0,imageView);
+        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(), 0, imageView);
         getSmsListView.forceRefresh();
 
     }

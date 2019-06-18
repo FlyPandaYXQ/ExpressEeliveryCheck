@@ -6,9 +6,11 @@ import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class BaseListAdapter<T> extends RecyclerView.Adapter {
     protected Context mContext;
 
@@ -53,7 +55,7 @@ public class BaseListAdapter<T> extends RecyclerView.Adapter {
     }
 
     public void remove(int position) {
-        if(this.mDataList.size() > 0) {
+        if (this.mDataList.size() > 0) {
             mDataList.remove(position);
             notifyItemRemoved(position);
         }

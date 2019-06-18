@@ -6,9 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.adapter.GetSmsAdapter;
 import com.example.expresseeliverycheck.model.SmsModel;
+import com.example.expresseeliverycheck.until.ConfigUtil;
 import com.example.expresseeliverycheck.until.ImageUtil;
 import com.example.expresseeliverycheck.until.SmsReadUntil;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
@@ -19,9 +19,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+
+/**
+ * @author FlyPanda@若曦
+ */
 public class GetSmsListView extends BaseListView<SmsModel> {
     private List<SmsModel> list = new ArrayList();
-    private final String ExpressName = "韵达，天天快递，佳吉快递，百世物流，联邦快递，德邦物流，华强物流，中铁物流，百世汇通，中铁快运，E速宝，信丰物流，顺丰速运，申通快递，龙邦速递，天地华宇，快捷快递，邮政国内小包，黑猫宅急便，新邦物流，卡行天下，安能物流，贝海国际速递，佳吉快运，能达速递，优速快递 ，增益速递，国通快递，邮政小包，圆通速递，圆通快递，中通快递，EMS经济快递，EMS，德邦快递，凡宇速递，联昊通，全峰快递，全一快递，城市100，广东EMS，速尔，燕文上海，燕文深圳，燕文义乌，飞远(爱彼西)配送，宅急送，中国邮政，微快递，菜鸟驿站";
     private int flag;
     private ImageView imageView;
 
@@ -89,7 +92,7 @@ public class GetSmsListView extends BaseListView<SmsModel> {
     private void dataProcess(List<HashMap<String, String>> dataList) {
         list = new ArrayList();
         List<SmsModel> list1 = new ArrayList();
-        String[] strings = ExpressName.split("，");
+        String[] strings = ConfigUtil.EXPRESSNAME.split("，");
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
         String nowDate = dateFormat.format(new Date(System.currentTimeMillis()));
         for (int i = 0; i < dataList.size(); i++) {
@@ -114,11 +117,11 @@ public class GetSmsListView extends BaseListView<SmsModel> {
                         smsModel.setIndex(index);
                         //去重
 
-                        if(list1.size()!=0&&i>0){
-                            if (!list1.get(list1.size()-1).getIndex().equals(index)){
+                        if (list1.size() != 0 && i > 0) {
+                            if (!list1.get(list1.size() - 1).getIndex().equals(index)) {
                                 list1.add(smsModel);
                             }
-                        } else if (list1.size()==0){
+                        } else if (list1.size() == 0) {
                             list1.add(smsModel);
                         }
                     }
@@ -137,11 +140,11 @@ public class GetSmsListView extends BaseListView<SmsModel> {
                         smsModel.setSmsDate(smsDate);
                         smsModel.setBody(str1);
                         smsModel.setIndex(index);
-                        if(list1.size()!=0&&i>0){
-                            if (!list1.get(list1.size()-1).getIndex().equals(index)){
+                        if (list1.size() != 0 && i > 0) {
+                            if (!list1.get(list1.size() - 1).getIndex().equals(index)) {
                                 list1.add(smsModel);
                             }
-                        } else if (list1.size()==0){
+                        } else if (list1.size() == 0) {
                             list1.add(smsModel);
                         }
                     }
@@ -149,9 +152,9 @@ public class GetSmsListView extends BaseListView<SmsModel> {
             }
         }
         list.addAll(list1);
-        if (imageView!=null){
+        if (imageView != null) {
             imageView.setVisibility(View.GONE);
-            if (list.size()==0){
+            if (list.size() == 0) {
                 imageView.setVisibility(View.VISIBLE);
             }
         }

@@ -2,6 +2,10 @@ package com.example.expresseeliverycheck.until;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteException;
+import android.net.Uri;
+import android.util.Log;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
@@ -9,11 +13,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteException;
-import android.net.Uri;
-import android.util.Log;
-
+/**
+ * @author FlyPanda@若曦
+ */
 public class SmsReadUntil {
 
     private int getSmsType;
@@ -26,7 +28,7 @@ public class SmsReadUntil {
     final String SMS_URI_FAILED = "content://sms/failed"; // 发送失败
     final String SMS_URI_QUEUED = "content://sms/queued"; // 待发送列表
 
-    public SmsReadUntil(int getSmsType,Activity activity){
+    public SmsReadUntil(int getSmsType, Activity activity) {
         this.getSmsType = getSmsType;
         this.activity = activity;
     }
@@ -35,12 +37,12 @@ public class SmsReadUntil {
     public List<HashMap<String, String>> getSmsInPhone() {
         List<HashMap<String, String>> smsList = new ArrayList<>();
         StringBuilder smsBuilder = new StringBuilder();
-        HashMap<String,String> hashMap = new HashMap();
+        HashMap<String, String> hashMap = new HashMap();
         int index = 0;
         try {
             Uri uri = Uri.parse(SMS_URI_INBOX);
-            String[] projection = new String[] { "_id", "address", "person",
-                    "body", "date", "type", };
+            String[] projection = new String[]{"_id", "address", "person",
+                    "body", "date", "type",};
             Cursor cur = activity.getContentResolver().query(uri, projection, null,
                     null, "date desc"); // 获取手机内部短信
             // 获取短信中最新的未读短信
@@ -91,10 +93,10 @@ public class SmsReadUntil {
 //                    smsBuilder.append(strType);
 //                    smsBuilder.append(" ]\n\n");
                     index++;
-                    hashMap= new HashMap();
-                    hashMap.put("strbody",strbody);
-                    hashMap.put("strDate",strDate);
-                    hashMap.put("index",index+"");
+                    hashMap = new HashMap();
+                    hashMap.put("strbody", strbody);
+                    hashMap.put("strDate", strDate);
+                    hashMap.put("index", index + "");
                     smsList.add(hashMap);
                 } while (cur.moveToNext());
 

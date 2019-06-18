@@ -1,12 +1,15 @@
 package com.example.expresseeliverycheck.model;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class SmsModel {
     private String index;
     private String smsTitle;
     private String body;
     private String smsDate;
     private String smsPhone;
-    private boolean isClick =false;
+    private boolean isClick = false;
 
     public boolean isClick() {
         return isClick;

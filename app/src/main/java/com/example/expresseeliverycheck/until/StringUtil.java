@@ -1,5 +1,8 @@
 package com.example.expresseeliverycheck.until;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class StringUtil {
     private static final String TAG = "StringUtil";
 

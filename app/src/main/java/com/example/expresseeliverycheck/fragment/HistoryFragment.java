@@ -16,6 +16,9 @@ import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class HistoryFragment extends Fragment {
     private GetSmsListView getSmsListView;
     @BindView(R.id.sms_list)
@@ -47,12 +50,13 @@ public class HistoryFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getSmsListView!=null){
+        if (getSmsListView != null) {
             getSmsListView.forceRefresh();
         }
     }
-    public void refresh(){
-        if (getSmsListView!=null){
+
+    public void refresh() {
+        if (getSmsListView != null) {
             getSmsListView.forceRefresh();
         }
     }
@@ -64,7 +68,7 @@ public class HistoryFragment extends Fragment {
 
     private void initData() {
         sms_list_refreshLayout.setEnableLoadMore(false);
-        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(),1,imageView);
+        getSmsListView = new GetSmsListView(sms_list, sms_list_refreshLayout, getActivity(), 1, imageView);
         getSmsListView.forceRefresh();
     }
 }

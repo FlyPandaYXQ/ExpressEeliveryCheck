@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -30,6 +29,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class WelComeActivity extends AppCompatActivity {
     private static final int PERMISSON_REQUESTCODE = 0;
     /**
@@ -96,8 +98,8 @@ public class WelComeActivity extends AppCompatActivity {
 
     @OnClick(R.id.activity_welcome_skipping)
     protected void skippingClick() {
-        startActivity(new Intent(this, MainActivity.class));
         timer.cancel();
+        startActivity(new Intent(this, MainActivity.class));
         finish();
     }
 
@@ -138,8 +140,8 @@ public class WelComeActivity extends AppCompatActivity {
         try {
             if (Build.VERSION.SDK_INT >= 23 && getApplicationInfo().targetSdkVersion >= 23) {
                 List<String> needRequestPermissonList = findDeniedPermissions(permissions);
-                for (String s : needRequestPermissonList) {
-                }
+//                for (String s : needRequestPermissonList) {
+//                }
                 if (null != needRequestPermissonList && needRequestPermissonList.size() > 0) {
                     try {
                         String[] array = needRequestPermissonList.toArray(new String[needRequestPermissonList.size()]);
@@ -329,7 +331,8 @@ public class WelComeActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
         } else {
-            getNoticeSmsPermissionDialog();
+            countDown(MIXMIN);
+//            getNoticeSmsPermissionDialog();
         }
     }
 

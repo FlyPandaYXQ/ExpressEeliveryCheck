@@ -12,13 +12,15 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class TabLayoutActivity extends AppCompatActivity {
     private TabLayout mTabTl;
     private ViewPager mContentVp;
@@ -39,7 +41,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         initTab();
     }
 
-    private void initTab(){
+    private void initTab() {
         mTabTl.setTabMode(TabLayout.MODE_SCROLLABLE);
         mTabTl.setTabTextColors(ContextCompat.getColor(this, R.color.gray), ContextCompat.getColor(this, R.color.white));
         mTabTl.setSelectedTabIndicatorColor(ContextCompat.getColor(this, R.color.white));
@@ -47,7 +49,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         mTabTl.setupWithViewPager(mContentVp);
     }
 
-    private void initContent(){
+    private void initContent() {
         tabIndicators = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             tabIndicators.add("Tab " + i);
@@ -86,7 +88,7 @@ public class TabLayoutActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class ContentPagerAdapter extends FragmentPagerAdapter{
+    class ContentPagerAdapter extends FragmentPagerAdapter {
 
         public ContentPagerAdapter(FragmentManager fm) {
             super(fm);

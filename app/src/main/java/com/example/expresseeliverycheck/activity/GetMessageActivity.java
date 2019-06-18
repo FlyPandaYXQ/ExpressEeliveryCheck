@@ -14,7 +14,6 @@ import android.telephony.SmsMessage;
 import android.text.TextUtils;
 import android.util.Log;
 
-
 import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.adapter.GetSmsAdapter;
 
@@ -26,6 +25,9 @@ import java.util.regex.Pattern;
 
 import butterknife.ButterKnife;
 
+/**
+ * @author FlyPanda@若曦
+ */
 public class GetMessageActivity extends AppCompatActivity {
     private BroadcastReceiver broadcastReceiver;
     private IntentFilter filter;
@@ -34,14 +36,15 @@ public class GetMessageActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private GetSmsAdapter getSmsAdapter;
     private String patternCoder = "(?<!\\\\d)\\\\d{6}(?!\\\\d)";
-    private List<HashMap<String,String>> smsList = new ArrayList<>();
+    private List<HashMap<String, String>> smsList = new ArrayList<>();
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_getsms);
         ButterKnife.bind(this);
 //        getSmsAdapter = new GetSmsAdapter(this,smsList);
-        handler = new Handler(){
+        handler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -55,35 +58,35 @@ public class GetMessageActivity extends AppCompatActivity {
         broadcastReceiver = new BroadcastReceiver() {
             @Override
             public void onReceive(Context context, Intent intent) {
-                Object[] objects =(Object[]) intent.getExtras().get("pdus");
-                for (Object obj:objects){
+                Object[] objects = (Object[]) intent.getExtras().get("pdus");
+                for (Object obj : objects) {
                     byte[] bytes = (byte[]) obj;
                     SmsMessage smsMessage = SmsMessage.createFromPdu(bytes);
                     //短信的内容
                     String message = smsMessage.getMessageBody();
-                    Log.d("FlyPanda==========>>>","message==========>>>"+message);
+                    Log.d("FlyPanda==========>>>", "message==========>>>" + message);
                     //短信的手机号
                     String smsTell = smsMessage.getOriginatingAddress();
-                    Log.d("FlyPanda==========>>>","smsTell==========>>>"+smsTell);
+                    Log.d("FlyPanda==========>>>", "smsTell==========>>>" + smsTell);
                     // Time time = new Time();
                     // time.set(sms.getTimestampMillis());
                     // String time2 = time.format3339(true);
                     // Log.d("logo", from + "   " + message + "  " + time2);
                     // strContent = from + "   " + message;
                     // handler.sendEmptyMessage(1);
-                    if (!TextUtils.isEmpty(message)){
+                    if (!TextUtils.isEmpty(message)) {
                         String code = patternCoder(message);
                         strSms = code;
-                        HashMap<String,String> hashMap = new HashMap<>();
-                        hashMap.put("sms",message);
-                        hashMap.put("code",smsTell);
+                        HashMap<String, String> hashMap = new HashMap<>();
+                        hashMap.put("sms", message);
+                        hashMap.put("code", smsTell);
                         smsList.add(hashMap);
                         handler.sendEmptyMessage(1);
                     }
                 }
             }
         };
-        registerReceiver(broadcastReceiver,filter);
+        registerReceiver(broadcastReceiver, filter);
     }
 
     @Override
@@ -91,19 +94,20 @@ public class GetMessageActivity extends AppCompatActivity {
         super.onDestroy();
         unregisterReceiver(broadcastReceiver);
     }
+
     /**
      * 匹配短信中间的6个数字（验证码等）
      *
      * @param patternContent
      * @return
      */
-    private String patternCoder(String patternContent){
-        if (TextUtils.isEmpty(patternContent)){
+    private String patternCoder(String patternContent) {
+        if (TextUtils.isEmpty(patternContent)) {
             return null;
         }
         Pattern pattern = Pattern.compile(patternCoder);
         Matcher matcher = pattern.matcher(patternContent);
-        if (matcher.find()){
+        if (matcher.find()) {
             return matcher.group();
         }
         return null;

@@ -2,25 +2,23 @@ package com.example.expresseeliverycheck.until;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintLayout;
 import android.view.Gravity;
 import android.view.KeyboardShortcutGroup;
 import android.view.Menu;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
 
 import java.util.List;
 
-import butterknife.BindView;
-
+/**
+ * @author FlyPanda@若曦
+ */
 public class AlertDialog extends Dialog implements android.view.View.OnClickListener {
     private Context context;
     private String title;

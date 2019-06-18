@@ -15,7 +15,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.Properties;
 
-public class  MiuiUtils {
+/**
+ * @author FlyPanda@若曦
+ */
+public class MiuiUtils {
     public static final String SYS_EMUI = "sys_emui";
     public static final String SYS_MIUI = "sys_miui";
     public static final String SYS_FLYME = "sys_flyme";
@@ -25,6 +28,7 @@ public class  MiuiUtils {
     private static final String KEY_EMUI_API_LEVEL = "ro.build.hw_emui_api_level";
     private static final String KEY_EMUI_VERSION = "ro.build.version.emui";
     private static final String KEY_EMUI_CONFIG_HW_SYS_VERSION = "ro.confg.hw_systemversion";
+
     public MiuiUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
