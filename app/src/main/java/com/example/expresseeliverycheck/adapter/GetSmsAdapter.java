@@ -1,10 +1,12 @@
 package com.example.expresseeliverycheck.adapter;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
@@ -47,6 +49,15 @@ public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
                 alertDialog.show();
             }
         });
+        SharedPreferences sharedPreferences = mContext.getSharedPreferences("flag",0);
+        int flag = sharedPreferences.getInt("select",0);
+        if (flag==0){
+            ((ViewHolder) holder).item_getsms_iv1.setVisibility(View.VISIBLE);
+            ((ViewHolder) holder).item_getsms_iv2.setVisibility(View.GONE);
+        } else if (flag==1){
+            ((ViewHolder) holder).item_getsms_iv2.setVisibility(View.VISIBLE);
+            ((ViewHolder) holder).item_getsms_iv1.setVisibility(View.GONE);
+        }
     }
 
 
@@ -57,6 +68,10 @@ public class GetSmsAdapter extends BaseListAdapter<SmsModel> {
         protected TextView item_getsms_body;
         @BindView(R.id.item_getsms_date)
         protected TextView item_getsms_date;
+        @BindView(R.id.item_getsms_iv1)
+        protected ImageView item_getsms_iv1;
+        @BindView(R.id.item_getsms_iv2)
+        protected ImageView item_getsms_iv2;
 
         public ViewHolder(View itemView) {
             super(itemView);

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_centerHorizontal="true"
@@ -10,12 +11,13 @@
     android:background="@color/white">
 
     <android.support.constraint.ConstraintLayout
+        android:id="@+id/item_getsms_now"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
 
         <ImageView
-            android:id="@+id/item_getsms_iv"
+            android:id="@+id/item_getsms_iv1"
             android:layout_width="300dp"
             android:layout_height="250dp"
             android:layout_gravity="center"
@@ -23,26 +25,37 @@
             android:layout_marginRight="8dp"
             android:src="@mipmap/bg1"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.536"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
-
         </ImageView>
+
+        <ImageView
+            android:id="@+id/item_getsms_iv2"
+            android:layout_width="300dp"
+            android:layout_height="250dp"
+            android:layout_gravity="center"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
+            android:src="@mipmap/bg2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.673"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"></ImageView>
 
         <TextView
             android:id="@+id/item_getsms_title"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginRight="8dp"
             android:gravity="center"
             android:padding="6dp"
             android:text="1111111"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.576"
+            app:layout_constraintHorizontal_bias="0.588"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -50,17 +63,20 @@
             android:id="@+id/item_getsms_body"
             android:layout_width="154dp"
             android:layout_height="108dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="46dp"
-            android:layout_marginRight="46dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp"
             android:ellipsize="marquee"
-            android:gravity="center_vertical"
-            android:marqueeRepeatLimit="marquee_forever"
+            android:gravity="center"
             android:lines="5"
-            android:padding="8dp"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:padding="4dp"
             android:text="1111111"
             android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@+id/item_getsms_iv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.613"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/item_getsms_title" />
 
         <TextView
@@ -70,8 +86,8 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="6dp"
-            android:paddingRight="8dp"
-            android:text="2222"
+            android:gravity="center"
+            android:text="9999/99/99"
             android:textColor="@color/common_text_color_red"
             android:textSize="10sp"
             app:layout_constraintEnd_toEndOf="@+id/item_getsms_body"
@@ -79,6 +95,8 @@
             app:layout_constraintTop_toBottomOf="@+id/item_getsms_body" />
 
     </android.support.constraint.ConstraintLayout>
+
+
 
 
 </LinearLayout>

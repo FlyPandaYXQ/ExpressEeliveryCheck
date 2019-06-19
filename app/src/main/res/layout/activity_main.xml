@@ -20,12 +20,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="30dp"
         android:orientation="horizontal">
         <LinearLayout
             android:id="@+id/activity_main_now"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/border_right"
             android:gravity="center"
@@ -33,8 +33,8 @@
             android:padding="4dp">
             <ImageView
                 android:id="@+id/activity_main_now_iv"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@mipmap/tclose"/>
             <TextView
                 android:id="@+id/activity_main_now_tv"
@@ -48,7 +48,7 @@
         <LinearLayout
             android:id="@+id/activity_main_history"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="@drawable/border_bottom"
             android:gravity="center"
@@ -56,8 +56,8 @@
             android:padding="4dp">
             <ImageView
                 android:id="@+id/activity_main_history_iv"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
                 android:src="@mipmap/tclose"/>
             <TextView
                 android:id="@+id/activity_main_history_tv"

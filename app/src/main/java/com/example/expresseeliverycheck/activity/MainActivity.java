@@ -118,6 +118,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         setSelected(0);
+        textViewSelect(0);
     }
 
     @Override
@@ -130,7 +131,10 @@ public class MainActivity extends AppCompatActivity {
 
     //自定义一个方法，设定布局中间的FrameLayout的选择状态
     private void setSelected(int i) {
-
+        SharedPreferences sharedPreferences = getSharedPreferences("flag",0);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("select",i);
+        editor.commit();
         //需要将按钮变亮，且需要切换fragment的状体
         //获取事务
         FragmentManager fm = getSupportFragmentManager();

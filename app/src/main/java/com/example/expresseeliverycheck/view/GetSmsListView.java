@@ -1,11 +1,13 @@
 package com.example.expresseeliverycheck.view;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.adapter.GetSmsAdapter;
 import com.example.expresseeliverycheck.model.SmsModel;
 import com.example.expresseeliverycheck.until.ConfigUtil;
@@ -152,9 +154,15 @@ public class GetSmsListView extends BaseListView<SmsModel> {
             }
         }
         list.addAll(list1);
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("flag",0);
+        int flag = sharedPreferences.getInt("select",0);
         if (imageView != null) {
             imageView.setVisibility(View.GONE);
-            if (list.size() == 0) {
+            if (list.size() == 0 && flag==0) {
+                imageView.setImageResource(R.mipmap.newnull);
+                imageView.setVisibility(View.VISIBLE);
+            }  if (list.size() == 0 && flag==1) {
+                imageView.setImageResource(R.mipmap.historynull);
                 imageView.setVisibility(View.VISIBLE);
             }
         }
