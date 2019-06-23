@@ -25,7 +25,6 @@ public class GetSmsReceiver extends BroadcastReceiver {
 //            SmsMessage smsMessage = SmsMessage.createFromPdu(pdusByte);
 //            smsMessage.getOriginatingAddress();//发送短信手机号
 //        }
-        System.out.println("----------------------- 广播");
         Message message = new Message();
         message.what = ConfigUtil.RECEIVERED_MSG;
         handler.sendMessage(message);

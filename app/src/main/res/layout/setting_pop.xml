@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="40dp"
+    android:gravity="center"
+    android:orientation="vertical">
+    <TextView
+        android:id="@+id/setting_pop_setting_tv"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:text="提醒我"
+        android:soundEffectsEnabled="false"
+        android:padding="4dp"
+        android:gravity="center"/>
+
+</LinearLayout>

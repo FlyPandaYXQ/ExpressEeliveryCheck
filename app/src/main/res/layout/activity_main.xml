@@ -5,23 +5,58 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="@color/light_gray"
+    android:orientation="vertical"
     tools:context=".activity.MainActivity">
 
-    <android.support.v7.widget.Toolbar
-        android:id="@+id/toolbar"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@color/colorBlue"
-        app:title="@string/app_name"
-        app:titleTextAppearance="@style/Toolbar.TitleText"
-        app:titleTextColor="@color/white" />
+        android:layout_height="wrap_content"
+        android:background="@color/colorBlue">
+
+        <com.felipecsl.gifimageview.library.GifImageView
+            android:id="@+id/activity_main_setting_gif"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="true"
+            android:layout_marginEnd="8dp"
+            android:soundEffectsEnabled="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorBlue"
+            android:backgroundTint="@color/colorBlue"
+            android:gravity="center_vertical"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/activity_main_setting_gif">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_marginRight="0dp"
+                android:background="@color/colorBlue"
+                app:title="@string/app_name"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:titleTextColor="@color/white" />
+
+        </LinearLayout>
+
+
+    </android.support.constraint.ConstraintLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="30dp"
         android:orientation="horizontal">
+
         <LinearLayout
             android:id="@+id/activity_main_now"
             android:layout_width="wrap_content"
@@ -29,13 +64,16 @@
             android:layout_weight="1"
             android:background="@drawable/border_right"
             android:gravity="center"
+            android:soundEffectsEnabled="false"
             android:orientation="horizontal"
             android:padding="4dp">
+
             <ImageView
                 android:id="@+id/activity_main_now_iv"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@mipmap/tclose"/>
+                android:src="@mipmap/tclose" />
+
             <TextView
                 android:id="@+id/activity_main_now_tv"
                 android:layout_width="match_parent"
@@ -52,19 +90,22 @@
             android:layout_weight="1"
             android:background="@drawable/border_bottom"
             android:gravity="center"
+            android:soundEffectsEnabled="false"
             android:orientation="horizontal"
             android:padding="4dp">
+
             <ImageView
                 android:id="@+id/activity_main_history_iv"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@mipmap/tclose"/>
+                android:src="@mipmap/tclose" />
+
             <TextView
                 android:id="@+id/activity_main_history_tv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="以往"
                 android:gravity="center"
+                android:text="以往"
                 android:textSize="14sp" />
         </LinearLayout>
 
@@ -73,7 +114,6 @@
     <FrameLayout
         android:id="@+id/activity_main_fragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </FrameLayout>
+        android:layout_height="match_parent"></FrameLayout>
 
 </LinearLayout>

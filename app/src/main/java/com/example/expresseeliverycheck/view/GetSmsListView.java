@@ -128,6 +128,10 @@ public class GetSmsListView extends BaseListView<SmsModel> {
                         }
                     }
                 }
+                SharedPreferences sharedPreferences = getActivity().getSharedPreferences("ExpressNum",0);
+                SharedPreferences.Editor editor= sharedPreferences.edit();
+                editor.putInt("nowExpressNum",list1.size());
+                editor.commit();
             } else if (flag == 1 && !nowDate.equals(smsDate)) {
                 if (smsBody.indexOf("】") != -1) {
                     str1 = smsBody.substring(smsBody.indexOf("】") + 1, smsBody.length());//截取】之后的字符串-

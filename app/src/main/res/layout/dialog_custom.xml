@@ -3,6 +3,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
+    android:soundEffectsEnabled="false"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
@@ -53,6 +54,7 @@
             android:background="@color/colorBlue"
             android:padding="10dp"
             android:text="确定"
+            android:soundEffectsEnabled="false"
             android:gravity="center"
             android:textColor="@color/white"
             android:textSize="14sp"
@@ -68,6 +70,7 @@
             android:background="@color/common_text_color_red"
             android:padding="10dp"
             android:text="取消"
+            android:soundEffectsEnabled="false"
             android:textColor="@color/white"
             android:textSize="14sp"
             android:gravity="center"

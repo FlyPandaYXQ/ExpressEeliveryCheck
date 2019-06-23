@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.expresseeliverycheck">
 
     <uses-permission android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.WRITE_SMS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        android:protectionLevel="signature|privileged"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <!-- 震动 -->
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- 锁屏显示 -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
 
     <uses-permission-sdk-23 android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
@@ -23,9 +34,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.example.expresseeliverycheck.activity.MainActivity"></activity>
+        <activity android:name="com.example.expresseeliverycheck.activity.MainActivity"
+           ></activity>
         <activity android:name="com.example.expresseeliverycheck.activity.GetMessageActivity"></activity>
-
+        <receiver android:name=".receiver.AlarmReceiver" android:process=":remote"></receiver>
+        <service android:name=".service.TimeService"/>
     </application>
 
 </manifest>

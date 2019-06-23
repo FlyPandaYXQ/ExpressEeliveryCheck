@@ -1,37 +1,62 @@
 package com.example.expresseeliverycheck.activity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.Service;
+import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.telephony.SmsMessage;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.fragment.HistoryFragment;
 import com.example.expresseeliverycheck.fragment.NowFragment;
+import com.example.expresseeliverycheck.receiver.AlarmReceiver;
 import com.example.expresseeliverycheck.until.ConfigUtil;
+import com.felipecsl.gifimageview.library.GifImageView;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
- *
  * @author FlyPanda@若曦
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.activity_main_fragment)
     protected FrameLayout activity_main_fragment;
     @BindView(R.id.activity_main_now_tv)
@@ -48,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
     protected LinearLayout activity_main_history;
     @BindView(R.id.activity_main)
     protected LinearLayout activity_main;
+    @BindView(R.id.activity_main_setting_gif)
+    protected GifImageView activity_main_setting_gif;
+
+
     //fragment
     private NowFragment nowFragment;
     private HistoryFragment historyFragment;
@@ -55,6 +84,8 @@ public class MainActivity extends AppCompatActivity {
     //广播
     private IntentFilter intentFilter;
     private GetSmsReceiver getSmsReceiver;
+    //设置下拉框
+    PopupWindow popupWindow;
 
     @Override
     protected void onCreate(@NonNull Bundle savedInstanceState) {
@@ -66,6 +97,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putInt("first", 1);
         editor.commit();
+        //锁屏亮屏
+        final Window win = getWindow();
+        win.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED
+                | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
+                | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
+
 
         initData();
         registerMyReceiver();
@@ -79,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
         textViewSelect(0);
         //监听
         activity_main.setOnTouchListener(new OntouchNextPage());
+        gifImageView();
     }
 
     //广播注册
@@ -131,9 +170,9 @@ public class MainActivity extends AppCompatActivity {
 
     //自定义一个方法，设定布局中间的FrameLayout的选择状态
     private void setSelected(int i) {
-        SharedPreferences sharedPreferences = getSharedPreferences("flag",0);
+        SharedPreferences sharedPreferences = getSharedPreferences("flag", 0);
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putInt("select",i);
+        editor.putInt("select", i);
         editor.commit();
         //需要将按钮变亮，且需要切换fragment的状体
         //获取事务
@@ -220,7 +259,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public boolean onTouch(View v, MotionEvent event) {
             // TODO Auto-generated method stub
-            System.out.println("------------------- " + event.getAction());
             switch (event.getAction()) {
 
                 case MotionEvent.ACTION_DOWN:
@@ -232,8 +270,6 @@ public class MainActivity extends AppCompatActivity {
                     mCurPosY = event.getY();
                     break;
                 case MotionEvent.ACTION_UP:
-                    System.out.println("------------------- " + mPosX);
-                    System.out.println("------------------- " + mCurPosX);
                     if (mCurPosX - mPosX > 0
                             && (Math.abs(mCurPosX - mPosX) > 25)) {
                         setSelected(1);
@@ -250,5 +286,117 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
     }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_tab_layout, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+//        if (id == R.id.action_settings) {
+//            return true;
+//        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * GifImageView获取图片资源并通过流的形式传递到
+     */
+    private void gifImageView() {
+        try {
+            @SuppressLint("ResourceType") InputStream is = getResources().openRawResource(R.mipmap.setting);//获取动图资源
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            byte[] b = new byte[2048];
+            int len = 0;
+            while (((len = is.read(b, 0, 2048)) != -1)) {
+                bos.write(b, 0, len);
+            }
+            bos.flush();//刷新流，确保传递完全
+            byte[] bytes = bos.toByteArray();//转换成Byte数组
+            activity_main_setting_gif.setBytes(bytes);//设置gif图片
+            activity_main_setting_gif.startAnimation();//运行动画
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    @OnClick(R.id.activity_main_setting_gif)
+    protected void settingClick(){
+        LinearLayout linearLayout = new LinearLayout(this);
+        View inflate = LayoutInflater.from(this).inflate(R.layout.setting_pop,linearLayout,false);
+        popupWindow = new PopupWindow(inflate);
+        popupWindow.setBackgroundDrawable(getResources().getDrawable(R.mipmap.pop_bg));
+        popupWindow.setFocusable(true);  //该值为false时，点击弹窗框外面window不会消失，即使设置了背景也无效，只能由dismiss()关闭
+        popupWindow.setHeight(100);
+        popupWindow.setWidth(200);
+        popupWindow.update();
+        popupWindow.showAsDropDown(activity_main_setting_gif);
+        TextView settingTv = inflate.findViewById(R.id.setting_pop_setting_tv);
+        settingTv.setOnClickListener(this);
+    }
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.setting_pop_setting_tv:
+                final Calendar calendar= Calendar.getInstance();
+                calendar.setTimeInMillis(System.currentTimeMillis());
+//                AlarmManager alarmManager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
+                new TimePickerDialog(this,new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker arg0, int h, int m) {
+//                        设置日历的时间，主要是让日历的年月日和当前同步
+                        calendar.setTimeInMillis(System.currentTimeMillis());
+                        //设置日历的小时和分钟
+                        calendar.set(Calendar.DAY_OF_YEAR, h);
+                        calendar.set(Calendar.MINUTE, m);
+                        //将秒和毫秒设置为0
+                        calendar.set(Calendar.SECOND, 0);
+                        calendar.set(Calendar.MILLISECOND, 0);
+                        //建立Intent和PendingIntent来调用闹钟管理器
+//                        Intent intent = new Intent(me, TimeService.class);
+                        Intent intent = new Intent(MainActivity.this, AlarmReceiver.class);
+                        intent.putExtra("expressNumCode",2);
+//                        PendingIntent pendingIntent = PendingIntent.getService(me, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                        PendingIntent pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 2, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+                       //获取闹钟管理器
+                        AlarmManager alarmManager = (AlarmManager)getSystemService(Service.ALARM_SERVICE);
+                        //设置闹钟
+                        // pendingIntent 为发送广播
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), pendingIntent);
+                        } else {
+                            alarmManager.setRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, SystemClock.elapsedRealtime(), 10*1000, pendingIntent);
+                        }
+//                        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 10*1000, pendingIntent);
+                        String h1 = null,m1 = null;
+                        if (String.valueOf(h).length()<2){
+                            h1 = "0"+String.valueOf(h);
+                        } else {
+                            h1 = String.valueOf(h);
+                        }
+                        if (String.valueOf(m).length()<2){
+                            m1 = "0"+String.valueOf(m);
+                        } else {
+                            m1 = String.valueOf(m);
+                        }
+                        Toast.makeText(MainActivity.this, "设置闹钟的时间为："+h1+":"+m1, Toast.LENGTH_SHORT).show();
+                    }
+                },calendar.get(Calendar.HOUR_OF_DAY),calendar.get(Calendar.MINUTE),true).show();
+                popupWindow.dismiss();
+                break;
+        }
+    }
+
 
 }
