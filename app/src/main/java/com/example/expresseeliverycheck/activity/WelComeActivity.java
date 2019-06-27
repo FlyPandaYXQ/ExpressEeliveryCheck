@@ -19,10 +19,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.expresseeliverycheck.R;
+import com.example.expresseeliverycheck.until.BaseActivity;
 import com.example.expresseeliverycheck.until.MiuiUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -32,13 +34,19 @@ import butterknife.OnClick;
 /**
  * @author FlyPanda@若曦
  */
-public class WelComeActivity extends AppCompatActivity {
+public class WelComeActivity extends BaseActivity {
     private static final int PERMISSON_REQUESTCODE = 0;
     /**
      * 需要进行检测的权限数组
      */
     protected String[] needPermissions = {
             Manifest.permission.READ_SMS,
+            Manifest.permission.WRITE_SETTINGS,
+            Manifest.permission.SYSTEM_ALERT_WINDOW,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.VIBRATE,
+            Manifest.permission.DISABLE_KEYGUARD,
+            Manifest.permission.WAKE_LOCK
     };
     /**
      * 判断是否需要检测，防止不停的弹框
@@ -235,11 +243,11 @@ public class WelComeActivity extends AppCompatActivity {
             if (Build.VERSION.SDK_INT >= 23) {
                 if (requestCode == PERMISSON_REQUESTCODE) {
                     if (!verifyPermissions(paramArrayOfInt)) {
-                        getNoticeSmsPermissionDialog();
+                        getNoticeSmsPermissionDialog(permissions);
                         isNeedCheck = false;
                     } else {
                         // 用户同意
-                        getNoticeSmsPermissionDialog();
+                        getNoticeSmsPermissionDialog(permissions);
                     }
                 }
             }
@@ -292,8 +300,8 @@ public class WelComeActivity extends AppCompatActivity {
         }
     }
 
-    private void getNoticeSmsPermissionDialog() {
-        if (MiuiUtils.SYS_MIUI.equals(MiuiUtils.getSystem())) {
+    private void getNoticeSmsPermissionDialog(String[] per) {
+        if (MiuiUtils.SYS_MIUI.equals(MiuiUtils.getSystem()) && Arrays.asList(per).contains(Manifest.permission.READ_SMS)) {
             try {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
                 builder.setTitle("提示");
@@ -336,19 +344,5 @@ public class WelComeActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * 启动应用的设置
-     *
-     * @since 2.5.0
-     */
-    private void startAppSettings() {
-        try {
-            Intent intent = new Intent(
-                    Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-            intent.setData(Uri.parse("package:" + getPackageName()));
-            startActivity(intent);
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
+
 }

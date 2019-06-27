@@ -1,17 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="wrap_content"
-    android:layout_height="40dp"
-    android:gravity="center"
-    android:orientation="vertical">
+    android:layout_height="100dp"
+    android:gravity="center">
+
     <TextView
         android:id="@+id/setting_pop_setting_tv"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_gravity="center"
-        android:text="提醒我"
+        android:gravity="center"
         android:soundEffectsEnabled="false"
-        android:padding="4dp"
-        android:gravity="center"/>
+        android:text="提醒我"
+        android:padding="2dp"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toTopOf="@+id/setting_pop_setting_time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/setting_pop_setting_time"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:soundEffectsEnabled="false"
+        android:text="今天00:00"
+        android:gravity="center"
+        android:padding="2dp"
+        android:textSize="12sp"
+        android:textColor="@color/colorBlue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/setting_pop_setting_tv"
+        app:layout_constraintStart_toStartOf="@+id/setting_pop_setting_tv"
+        app:layout_constraintTop_toBottomOf="@+id/setting_pop_setting_tv" />
+</android.support.constraint.ConstraintLayout>

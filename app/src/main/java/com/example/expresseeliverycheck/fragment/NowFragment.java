@@ -50,9 +50,9 @@ public class NowFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (getSmsListView != null) {
-            getSmsListView.forceRefresh();
-        }
+//        if (getSmsListView != null) {
+//            getSmsListView.forceRefresh();
+//        }
     }
 
     public void refresh() {

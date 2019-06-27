@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="300dp"
+    android:layout_height="250dp"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/transparent"
+    android:soundEffectsEnabled="false">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/waring_dialog_ll"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@mipmap/waring_bg"
+        android:gravity="center"
+        android:padding="25dp">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="65dp"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp"
+            app:layout_constraintTop_toTopOf="@+id/waring_dialog_ll">
+
+            <TextView
+                android:id="@+id/waring_dialog_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="10dp"
+                android:text="11111111111111"
+                android:textColor="@color/common_text_color_red"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/waring_is_or_no_constraintLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/waring_dialog_ll"
+            app:layout_constraintRight_toRightOf="@+id/waring_dialog_ll">
+
+            <TextView
+                android:id="@+id/tv_waring_dialog_positive"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:soundEffectsEnabled="false"
+                android:text="去设置"
+                android:textColor="@color/colorBlue"
+                android:textSize="14sp"
+                app:layout_constraintBaseline_toBaselineOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/tv_waring_dialog_negative"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_waring_dialog_negative"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:soundEffectsEnabled="false"
+                android:text="已设置"
+                android:textColor="@color/common_text_color_green"
+                android:textSize="14sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/tv_waring_dialog_positive"
+                app:layout_constraintTop_toTopOf="parent" />
+        </android.support.constraint.ConstraintLayout>
+    </android.support.constraint.ConstraintLayout>
+
+
+</android.support.constraint.ConstraintLayout>

@@ -10,9 +10,25 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+    signingConfigs {
+        debug {
+            storeFile file('E:\\Android Work\\ExpressEeliveryCheck\\FlyPanda.jks')
+            storePassword "000000"
+            keyAlias 'flypanda'
+            keyPassword "000000"
+        }
+
+        release {
+            storeFile file('E:\\Android Work\\ExpressEeliveryCheck\\FlyPanda.jks')
+            storePassword "000000"
+            keyAlias 'flypanda'
+            keyPassword "000000"
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
