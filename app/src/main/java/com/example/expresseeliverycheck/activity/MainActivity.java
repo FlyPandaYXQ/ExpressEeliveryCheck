@@ -2,14 +2,12 @@ package com.example.expresseeliverycheck.activity;
 
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
@@ -350,9 +348,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @OnClick(R.id.activity_main_setting_gif)
     protected void settingClick() {
         SharedPreferences sharedPreferences = getSharedPreferences("time", 0);
-        if (!"".equals(sharedPreferences.getString("settingTime", ""))) {
-            settingTime = sharedPreferences.getString("settingTime", "");
-        }
+        settingTime = sharedPreferences.getString("settingTime", "");
         SharedPreferences sharedPreferences1 = getSharedPreferences("setper",0);
         setperFlag = sharedPreferences1.getInt("setperFlag",0);
         LinearLayout linearLayout = new LinearLayout(this);
