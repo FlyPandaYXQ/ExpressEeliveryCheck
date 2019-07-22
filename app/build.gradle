@@ -6,17 +6,17 @@ android {
         applicationId "com.example.expresseeliverycheck"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 101
+        versionName "1.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
-        debug {
-            storeFile file('E:\\Android Work\\ExpressEeliveryCheck\\FlyPanda.jks')
-            storePassword "000000"
-            keyAlias 'flypanda'
-            keyPassword "000000"
-        }
+//        debug {
+//            storeFile file('E:\\Android Work\\ExpressEeliveryCheck\\FlyPanda.jks')
+//            storePassword "000000"
+//            keyAlias 'flypanda'
+//            keyPassword "000000"
+//        }
 
         release {
             storeFile file('E:\\Android Work\\ExpressEeliveryCheck\\FlyPanda.jks')
@@ -49,5 +49,7 @@ dependencies {
     implementation 'com.scwang.smartrefresh:SmartRefreshLayout:1.1.0-alpha-20'
     implementation 'com.race604.flyrefresh:library:2.0.0'
     implementation 'com.felipecsl:gifimageview:2.1.0'//gif
+    implementation 'com.coolerfall:android-app-daemon:1.2.0'//守护进程以及灰色保活来保证后台闹钟服务不被Kill掉
+    implementation 'com.github.duanhong169:colorpicker:1.1.6'//颜色选择器
 }
 

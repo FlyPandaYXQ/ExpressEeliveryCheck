@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">拿快递啦</string>
+    <string name="color_picker">颜色选择器</string>
 </resources>

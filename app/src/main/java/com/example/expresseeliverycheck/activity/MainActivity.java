@@ -1,9 +1,9 @@
 package com.example.expresseeliverycheck.activity;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.app.Service;
 import android.app.TimePickerDialog;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -12,13 +12,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.provider.AlarmClock;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.telephony.SmsMessage;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,6 +42,7 @@ import android.widget.Toast;
 import com.example.expresseeliverycheck.R;
 import com.example.expresseeliverycheck.fragment.HistoryFragment;
 import com.example.expresseeliverycheck.fragment.NowFragment;
+import com.example.expresseeliverycheck.receiver.AlarmReceiver;
 import com.example.expresseeliverycheck.service.TimeService;
 import com.example.expresseeliverycheck.until.BaseActivity;
 import com.example.expresseeliverycheck.until.ConfigUtil;
@@ -48,10 +53,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import top.defaults.colorpicker.ColorPickerPopup;
+
+import static android.app.TimePickerDialog.OnTimeSetListener;
 
 /**
  * @author FlyPanda@若曦
@@ -76,25 +85,33 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @BindView(R.id.activity_main_setting_gif)
     protected GifImageView activity_main_setting_gif;
 
-
+    @BindView(R.id.activity_main_title)
+    protected ConstraintLayout activity_main_title;
+    @BindView(R.id.appBarLayout)
+    protected LinearLayout appBarLayout;
+    @BindView(R.id.toolbar)
+    protected Toolbar toolbar;
+    protected TextView timeTv; //定时时间
     //fragment
     private NowFragment nowFragment;
     private HistoryFragment historyFragment;
     private FragmentTransaction ftr;//事务
     //广播
-    private IntentFilter intentFilter;
+    private AlarmReceiver alarmReceiver;
     private GetSmsReceiver getSmsReceiver;
-    //    private AlarmReceiver alarmReceiver;
+
     //设置下拉框
     PopupWindow popupWindow;
 
     private String settingTime = "";
 
-    private int setperFlag=0;//是否设置悬浮窗权限flag 1:设置
+    private int setperFlag = 0;//是否设置悬浮窗权限flag 1:设置
     private boolean isSetClick = false;//是否点击设置
-
+    private int tabSelectedFlag = 1;//1 今天 2 历史
+    private int themeColor = 0; //主题颜色
     protected MyBinder myBinder;
-    protected MyServeiceConn myServeiceConn= new MyServeiceConn();
+    protected MyServeiceConn myServeiceConn = new MyServeiceConn();
+
     @Override
     protected void onCreate(@NonNull Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,17 +139,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //设置gif
         gifImageView();
 
-        SharedPreferences sharedPreferences = getSharedPreferences("setper",0);
-        setperFlag = sharedPreferences.getInt("setperFlag",0);
+        SharedPreferences sharedPreferences = getSharedPreferences("setper", 0);
+        setperFlag = sharedPreferences.getInt("setperFlag", 0);
+        //背景颜色
+        SharedPreferences sharedPreferences1 = getSharedPreferences("color", 0);
+        themeColor = sharedPreferences1.getInt("themeColor", 0);
+        if (themeColor != 0) {
+            setThemeColor(themeColor);
+        }
     }
 
     //广播注册
     private void registerMyReceiver() {
+        IntentFilter intentFilter;
         intentFilter = new IntentFilter();
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
         getSmsReceiver = new GetSmsReceiver();
         registerReceiver(getSmsReceiver, intentFilter);
-//        Intent intent = new Intent(String.valueOf(ConfigUtil.RECEIVERED_MSG));
+    }
+
+    private void startTimeService() {
+        Intent intent = new Intent(this, TimeService.class);
+        intent.putExtra("start", 1);
+        startService(intent);
     }
 
     //短信广播
@@ -162,10 +191,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onRestart() {
         super.onRestart();
-        SharedPreferences sharedPreferences1 = getSharedPreferences("setper",0);
-        setperFlag = sharedPreferences1.getInt("setperFlag",0);
-        if (isSetClick){
-            if (setperFlag==1){
+        SharedPreferences sharedPreferences1 = getSharedPreferences("setper", 0);
+        setperFlag = sharedPreferences1.getInt("setperFlag", 0);
+        if (isSetClick) {
+            if (setperFlag == 1) {
                 setTime();
             }
         }
@@ -174,10 +203,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        //取消广播
-        unregisterReceiver(getSmsReceiver);
+    protected void onStop() {
+        super.onStop();
+        startTimeService();
     }
 
 
@@ -243,25 +271,35 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         setSelected(1);
     }
 
-    //ui变化
+    //tab 字体颜色变化
     private void textViewSelect(int flag) {
         switch (flag) {
             case 0:
+                tabSelectedFlag = 1;
                 activity_main_now_iv.setImageResource(R.mipmap.topen);
-                activity_main_now_tv.setTextColor(getResources().getColor(R.color.colorBlue));
+                if (themeColor != 0) {
+                    activity_main_now_tv.setTextColor(themeColor);
+                } else {
+                    activity_main_now_tv.setTextColor(getResources().getColor(R.color.colorBlue));
+                }
                 activity_main_history_iv.setImageResource(R.mipmap.tclose);
                 activity_main_history_tv.setTextColor(getResources().getColor(R.color.black));
                 break;
             case 1:
+                tabSelectedFlag = 2;
                 activity_main_history_iv.setImageResource(R.mipmap.topen);
-                activity_main_history_tv.setTextColor(getResources().getColor(R.color.colorBlue));
+                if (themeColor != 0) {
+                    activity_main_history_tv.setTextColor(themeColor);
+                } else {
+                    activity_main_history_tv.setTextColor(getResources().getColor(R.color.colorBlue));
+                }
                 activity_main_now_iv.setImageResource(R.mipmap.tclose);
                 activity_main_now_tv.setTextColor(getResources().getColor(R.color.black));
                 break;
         }
     }
 
-
+    //滑动切换 (暂时无效)
     class OntouchNextPage implements View.OnTouchListener {
 
         private float mPosX;
@@ -347,47 +385,51 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @OnClick(R.id.activity_main_setting_gif)
     protected void settingClick() {
-        SharedPreferences sharedPreferences = getSharedPreferences("time", 0);
-        settingTime = sharedPreferences.getString("settingTime", "");
-        SharedPreferences sharedPreferences1 = getSharedPreferences("setper",0);
-        setperFlag = sharedPreferences1.getInt("setperFlag",0);
         LinearLayout linearLayout = new LinearLayout(this);
         View inflate = LayoutInflater.from(this).inflate(R.layout.setting_pop, linearLayout, false);
+        timeTv = inflate.findViewById(R.id.setting_pop_setting_time);
+        showSettingClockTime();
+        //计算高度 宽度
+        int width = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        int height = View.MeasureSpec.makeMeasureSpec(0,
+                View.MeasureSpec.UNSPECIFIED);
+        inflate.measure(width, height);
         popupWindow = new PopupWindow(inflate);
         popupWindow.setBackgroundDrawable(getResources().getDrawable(R.mipmap.pop_bg));
         popupWindow.setFocusable(true);  //该值为false时，点击弹窗框外面window不会消失，即使设置了背景也无效，只能由dismiss()关闭
-        TextView timeTv = inflate.findViewById(R.id.setting_pop_setting_time);
-        //显示时间
-        if (("").equals(settingTime)) {
-            popupWindow.setHeight(100);
-            timeTv.setVisibility(View.GONE);
-        } else {
-            popupWindow.setHeight(180);
-            timeTv.setVisibility(View.VISIBLE);
-            timeTv.setText("今天 " + settingTime);
-        }
-        popupWindow.setWidth(210);
+
+        popupWindow.setHeight(inflate.getMeasuredHeight());
+        popupWindow.setWidth(inflate.getMeasuredWidth());
         popupWindow.update();
         popupWindow.showAsDropDown(activity_main_setting_gif);
-        TextView settingTv = inflate.findViewById(R.id.setting_pop_setting_tv);
-        settingTv.setOnClickListener(this);
-
+        //设置点击监听
+        inflate.findViewById(R.id.setting_pop_setting_time_tv).setOnClickListener(this);
+        inflate.findViewById(R.id.setting_pop_setting_color_tv).setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        //是否第一次点击 授权
+        SharedPreferences sharedPreferences1 = getSharedPreferences("setper", 0);
+        setperFlag = sharedPreferences1.getInt("setperFlag", 0);
         switch (v.getId()) {
-            case R.id.setting_pop_setting_tv:
+            case R.id.setting_pop_setting_time_tv:
                 isSetClick = true;
-                if (setperFlag!=1){
+                if (setperFlag != 1) {
                     showMissingPermissionDialog();
                 } else {
                     setTime();
                 }
                 popupWindow.dismiss();
                 break;
+            case R.id.setting_pop_setting_color_tv:
+                opeAdvancenDialog();
+                popupWindow.dismiss();
+                break;
         }
     }
+
     class MyServeiceConn implements ServiceConnection {
         // 服务被绑定成功之后执行
         @Override
@@ -401,14 +443,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON
                     | WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         }
+
         // 服务奔溃或者被杀掉执行
         @Override
         public void onServiceDisconnected(ComponentName name) {
 
         }
     }
+
     class MyBinder extends Binder {
-        MyBinder getService(){
+        MyBinder getService() {
             return MyBinder.this;
         }
     }
@@ -420,19 +464,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void showMissingPermissionDialog() {
         try {
-          WaringAlertDialog waringAlertDialog =  new WaringAlertDialog(this, "当前应用缺少必要权限。请点击 > 设置 > 权限 > 打开【锁屏显示】 【后台弹出界面】 【显示悬浮窗】权限", "去设置", "已设置", new WaringAlertDialog.OnDialogButtonClickListener() {
+            WaringAlertDialog waringAlertDialog = new WaringAlertDialog(this, "当前应用缺少必要权限。请点击 > 设置 > 权限 > 打开【锁屏显示】 【后台弹出界面】 【显示悬浮窗】权限", "去设置", "已设置", new WaringAlertDialog.OnDialogButtonClickListener() {
                 @Override
                 public void onDialogButtonClick(boolean isPositive) {
-                    if (isPositive){
-                        SharedPreferences sharedPreferences = getSharedPreferences("setper",0);
+                    if (isPositive) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("setper", 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt("setperFlag",1);
+                        editor.putInt("setperFlag", 1);
                         editor.commit();
                         startAppSettings();
-                    }else {
-                        SharedPreferences sharedPreferences = getSharedPreferences("setper",0);
+                    } else {
+                        SharedPreferences sharedPreferences = getSharedPreferences("setper", 0);
                         SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putInt("setperFlag",1);
+                        editor.putInt("setperFlag", 1);
                         editor.commit();
                         setTime();
                     }
@@ -444,53 +488,201 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             e.printStackTrace();
         }
     }
-    //设置闹钟
-    private void setTime(){
-        isSetClick =false;
+
+    //选择时间
+    private void setTime() {
+        isSetClick = false;
         final Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(System.currentTimeMillis());
-//                AlarmManager alarmManager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
-        new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
-            @Override
-            public void onTimeSet(TimePicker arg0, int hourOfDay, int minute) {
-                calendar.setTimeInMillis(System.currentTimeMillis());
-                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
-                calendar.set(Calendar.MINUTE, minute);
-                calendar.set(Calendar.SECOND, 0);
-                calendar.set(Calendar.MILLISECOND, 0);
-                //建立Intent和PendingIntent来调用闹钟管理器
-                Intent intent = new Intent(MainActivity.this, TimeService.class);
-                intent.setAction("dialog");
+        final Activity activity = this;
+        try {
+            WaringAlertDialog waringAlertDialog = new WaringAlertDialog(activity, "是否添加系统闹钟", "是", "否", new WaringAlertDialog.OnDialogButtonClickListener() {
+                @Override
+                public void onDialogButtonClick(boolean isPositive) {
 
-                PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    if (isPositive) {
+                        new TimePickerDialog(activity, new OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker arg0, int hourOfDay, int minute) {
+                                calendar.setTimeInMillis(System.currentTimeMillis());
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, 0);
+                                calendar.set(Calendar.MILLISECOND, 0);
+                                setClock(calendar, hourOfDay, minute, 1);
+                            }
+                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                    } else {
+                        new TimePickerDialog(activity, new OnTimeSetListener() {
+                            @Override
+                            public void onTimeSet(TimePicker arg0, int hourOfDay, int minute) {
+                                calendar.setTimeInMillis(System.currentTimeMillis());
+                                calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+                                calendar.set(Calendar.MINUTE, minute);
+                                calendar.set(Calendar.SECOND, 0);
+                                calendar.set(Calendar.MILLISECOND, 0);
+                                setClock(calendar, hourOfDay, minute, 2);
+                            }
+                        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+                    }
+                }
+            });
+            waringAlertDialog.setCancelable(false);
+            waringAlertDialog.show();
 
-                //获取闹钟管理器
-                AlarmManager alarmManager = (AlarmManager) getSystemService(Service.ALARM_SERVICE);
-                //设置闹钟
-                // pendingIntent 为发送广播
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }
-                String h1 = null, m1 = null;
-                if (String.valueOf(hourOfDay).length() < 2) {
-                    h1 = "0" + String.valueOf(hourOfDay);
-                } else {
-                    h1 = String.valueOf(hourOfDay);
-                }
-                if (String.valueOf(minute).length() < 2) {
-                    m1 = "0" + String.valueOf(minute);
-                } else {
-                    m1 = String.valueOf(minute);
-                }
-                settingTime = h1 + ":" + m1;
-                SharedPreferences sharedPreferences1 = getSharedPreferences("time", 0);
-                SharedPreferences.Editor editor = sharedPreferences1.edit();
-                editor.putString("settingTime", settingTime);
-                editor.commit();
-                Toast.makeText(MainActivity.this, "设置闹钟的时间为：" + h1 + ":" + m1, Toast.LENGTH_SHORT).show();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            System.out.println("******************** " + e);
+        }
+    }
+
+    //设置闹钟
+    private void setClock(final Calendar calendar, int hour, int minute, int flag) {
+        if (!timeDetermine(hour, minute, true)) {
+            return;
+        }
+        String h1 = null, m1 = null;
+        if (String.valueOf(hour).length() < 2) {
+            h1 = "0" + calendar.get(hour);
+        } else {
+            h1 = String.valueOf(hour);
+        }
+        if (String.valueOf(minute).length() < 2) {
+            m1 = "0" + calendar.get(minute);
+        } else {
+            m1 = String.valueOf(minute);
+        }
+        if (flag == 1) {
+            //  action为AlarmClock.ACTION_SET_ALARM 系统闹钟
+            Intent intent = new Intent(AlarmClock.ACTION_SET_ALARM)
+                    //闹钟的小时
+                    .putExtra(AlarmClock.EXTRA_HOUR, hour)
+                    //闹钟的分钟
+                    .putExtra(AlarmClock.EXTRA_MINUTES, minute)
+                    //响铃时提示的信息
+                    .putExtra(AlarmClock.EXTRA_MESSAGE, "记得拿快递(・。・)")
+                    //用于指定该闹铃触发时是否振动
+                    .putExtra(AlarmClock.EXTRA_VIBRATE, true)
+                    //一个 content: URI，用于指定闹铃使用的铃声，也可指定 VALUE_RINGTONE_SILENT 以不使用铃声。
+                    //如需使用默认铃声，则无需指定此 extra。
+                    .putExtra(AlarmClock.EXTRA_RINGTONE, R.raw.cnwav)
+                    //一个 ArrayList，其中包括应重复触发该闹铃的每个周日。
+                    // 每一天都必须使用 Calendar 类中的某个整型值（如 MONDAY）进行声明。
+                    //对于一次性闹铃，无需指定此 extra
+//                        .putExtra(AlarmClock.EXTRA_DAYS, testDays)
+                    //如果为true，则调用startActivity()不会进入手机的闹钟设置界面
+                    .putExtra(AlarmClock.EXTRA_SKIP_UI, true);
+            if (intent.resolveActivity(getPackageManager()) != null) {
+                startActivity(intent);
             }
-        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+            Toast.makeText(MainActivity.this, "设置闹钟的时间为：" + h1 + ":" + m1, Toast.LENGTH_SHORT).show();
+        } else if (flag == 2) {
+            //建立Intent和PendingIntent来调用闹钟管理器
+            Intent intent = new Intent(MainActivity.this, TimeService.class);
+            intent.setAction("dialog");
+            intent.putExtra("start", 2);
+            PendingIntent pendingIntent = PendingIntent.getService(MainActivity.this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+            //获取闹钟管理器
+            AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+            // 设置闹钟
+            // pendingIntent
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+                alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            } else {
+                alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+            }
+            Toast.makeText(MainActivity.this, "请不要退出App,否则闹钟有可能无效！！！", Toast.LENGTH_SHORT).show();
+
+        }
+        settingTime = h1 + ":" + m1;
+        SharedPreferences sharedPreferences1 = getSharedPreferences("time", 0);
+        SharedPreferences.Editor editor = sharedPreferences1.edit();
+        editor.putString("settingTime", settingTime);
+        editor.putInt("hour", calendar.get(Calendar.HOUR_OF_DAY));
+        editor.putInt("min", calendar.get(Calendar.MINUTE));
+        editor.commit();
+    }
+
+    //颜色选择器
+    private void opeAdvancenDialog() {
+        new ColorPickerPopup.Builder(this)
+                .initialColor(Color.RED) // Set initial color
+                .enableAlpha(true) // Enable alpha slider or not
+                .okTitle("选择")
+                .cancelTitle("取消")
+                .showIndicator(true)
+                .showValue(true)
+                .build()
+                .show(new ColorPickerPopup.ColorPickerObserver() {
+                    @Override
+                    public void onColorPicked(int color) {
+                        SharedPreferences sharedPreferences = getSharedPreferences("color", 0);
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putInt("themeColor", color);
+                        editor.commit();
+                        themeColor = color;
+                        setThemeColor(color);
+                    }
+                });
+    }
+
+    //设置主题颜色
+    private void setThemeColor(int color) {
+        activity_main_title.setBackgroundColor(color);
+        appBarLayout.setBackgroundColor(color);
+        toolbar.setBackgroundColor(color);
+        switch (tabSelectedFlag) {
+            case 1:
+                activity_main_now_tv.setTextColor(color);
+                break;
+            case 2:
+                activity_main_history_tv.setTextColor(color);
+                break;
+        }
+    }
+
+    //设置seetting时间显示
+    private void showSettingClockTime() {
+        SharedPreferences timeSharedPreferences = getSharedPreferences("time", 0);
+        int hour = timeSharedPreferences.getInt("hour", 0);
+        int min = timeSharedPreferences.getInt("min", 0);
+        timeTv.setVisibility(View.GONE);
+        //显示时间
+        if (timeDetermine(hour, min, false)) {
+            settingTime = timeSharedPreferences.getString("settingTime", "");
+            if (!("").equals(settingTime)) {
+                timeTv.setVisibility(View.VISIBLE);
+                timeTv.setText("今天 " + settingTime);
+                if (themeColor != 0) {
+                    timeTv.setTextColor(themeColor);
+                }
+            }
+        }
+    }
+
+    //时间判断
+    private Boolean timeDetermine(int hour, int minute, boolean isShowToast) {
+        SharedPreferences timeSharedPreferences = getSharedPreferences("time", 0);
+        if (hour < new Date().getHours()) {
+            if (isShowToast) {
+                timeSharedPreferences.edit().putString("settingTime", "").commit();
+                Toast.makeText(this, "设置时间小于当前时间，闹钟无效", Toast.LENGTH_SHORT).show();
+            }
+            return false;
+        } else if (hour == new Date().getHours()) {
+            if (minute < new Date().getMinutes()) {
+                if (isShowToast) {
+                    timeSharedPreferences.edit().putString("settingTime", "").commit();
+                    Toast.makeText(this, "设置时间小于当前时间，闹钟无效", Toast.LENGTH_SHORT).show();
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else if (hour > new Date().getHours()) {
+            return true;
+        }
+        return false;
     }
 }

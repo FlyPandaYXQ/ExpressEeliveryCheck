@@ -1,19 +1,26 @@
 package com.example.expresseeliverycheck.receiver;
 
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
 import android.app.KeyguardManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.media.Ringtone;
+import android.os.Build;
 import android.os.PowerManager;
 import android.os.Vibrator;
 
 import com.example.expresseeliverycheck.activity.DialogActivity;
 import com.example.expresseeliverycheck.activity.MainActivity;
+import com.example.expresseeliverycheck.service.TimeService;
 import com.example.expresseeliverycheck.until.ActivityCollector;
 import com.example.expresseeliverycheck.until.AlertDialog;
+
+import java.util.Calendar;
 
 
 public class AlarmReceiver extends BroadcastReceiver {
@@ -22,12 +29,14 @@ public class AlarmReceiver extends BroadcastReceiver {
     private Ringtone mRingTone;
     private Vibrator mVibrator;
     private MediaPlayer mediaPlayer;
+
     @Override
     public void onReceive(Context context, Intent intent) {
 //        int code = intent.getIntExtra("expressNumCode", 0);
-        System.out.println("----------------------------- expressNumCode " + intent.getFlags());
-        System.out.println("----------------------------- isActivityExist " + ActivityCollector.isActivityExist(MainActivity.class));
-        System.out.println("----------------------------- getAction " + intent.getAction());
+        if (intent.getAction().equals("com.example.expresseeliverycheck.startService")) {
+            startUploadService(context);
+        }
+        System.out.println("*************************--AlarmReceiver--");
 
 //        if ("dialog".equals(intent.getAction())){
 //            Intent intent1 = new Intent(context,DialogActivity.class);
@@ -73,7 +82,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
 
-
     class alertDialogClick implements AlertDialog.OnDialogButtonClickListener {
         @Override
         public void onDialogButtonClick(boolean isPositive) {
@@ -96,5 +104,31 @@ public class AlarmReceiver extends BroadcastReceiver {
         //释放
 //        wl.release();
     }
+   private void  startUploadService(Context context){
+       SharedPreferences sharedPreferences = context.getSharedPreferences("time", 0);
+       int hourOfDay = sharedPreferences.getInt("hour", 0);
+       int minute = sharedPreferences.getInt("min", 0);
+       final Calendar calendar = Calendar.getInstance();
+       calendar.setTimeInMillis(System.currentTimeMillis());
+       calendar.setTimeInMillis(System.currentTimeMillis());
+       calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+       calendar.set(Calendar.MINUTE, minute);
+       calendar.set(Calendar.SECOND, 0);
+       calendar.set(Calendar.MILLISECOND, 0);
+       //建立Intent和PendingIntent来调用闹钟管理器
+       Intent intent1 = new Intent(context, TimeService.class);
+       intent1.setAction("dialog");
 
+       PendingIntent pendingIntent = PendingIntent.getService(context, 0, intent1, PendingIntent.FLAG_UPDATE_CURRENT);
+
+       //获取闹钟管理器
+       AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+       // 设置闹钟
+       // pendingIntent
+       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+           alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+       } else {
+           alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+       }
+   }
 }

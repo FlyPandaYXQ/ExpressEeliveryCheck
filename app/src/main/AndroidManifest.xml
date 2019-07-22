@@ -21,6 +21,7 @@
 
     <uses-permission-sdk-23 android:name="android.permission.READ_SMS" />
     <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/logo"
@@ -28,7 +29,8 @@
         android:name=".MyApplication"
         android:roundIcon="@mipmap/logo"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:persistent="true"
+        android:theme="@style/AppTheme">  <!--persistent提高优先级-->
         <activity
             android:name="com.example.expresseeliverycheck.activity.WelComeActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
@@ -47,8 +49,20 @@
             android:excludeFromRecents="true"></activity>
         <receiver android:name=".receiver.AlarmReceiver"
             android:process=":remote"
-            android:exported="true"></receiver>
-        <service android:name=".service.TimeService"/>
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.USER_PRESENT" />
+                <action android:name="android.intent.action.PACKAGE_RESTARTED" />
+                <action android:name="com.example.expresseeliverycheck.startService" /><!--自定义action-->
+            </intent-filter>
+        </receiver>
+        <service android:name=".service.TimeService"
+            android:enabled="true">
+            <intent-filter android:priority="1000" >
+                <action android:name="com.example.expresseeliverycheck.startServicee" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
