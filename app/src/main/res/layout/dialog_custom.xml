@@ -42,7 +42,7 @@
     <android.support.constraint.ConstraintLayout
         android:id="@+id/is_or_no_constraintLayout"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="30dp"
         android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="@+id/tv_dialog_positive"
         app:layout_constraintStart_toEndOf="@+id/tv_dialog_positive">
@@ -52,7 +52,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@color/colorBlue"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="确定"
             android:soundEffectsEnabled="false"
             android:gravity="center"
@@ -68,7 +68,7 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:background="@color/common_text_color_red"
-            android:padding="10dp"
+            android:padding="5dp"
             android:text="取消"
             android:soundEffectsEnabled="false"
             android:textColor="@color/white"
